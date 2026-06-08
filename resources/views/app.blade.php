@@ -15,7 +15,7 @@
 
     <script>
         window.env = {
-            API_BASE_URL: '{{ env(API_BASE_URL) }}'
+            API_BASE_URL: '{{ env("API_BASE_URL") }}'
         }
     </script>
 </html>
