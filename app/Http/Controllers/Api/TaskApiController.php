@@ -61,4 +61,21 @@ class TaskApiController extends Controller
             'message' => 'Marked as done'
         ], 200); 
     }
+
+    public function deleteTask($taskId)
+    {
+        $isDeleted = Task::find($taskId);
+
+        if (!$isDeleted) {
+            return response() -> json([
+                'error' => 'Task not found'
+            ], 404);
+        }
+
+        $isDeleted->delete();
+
+        return response() -> json([
+            'message' => 'Deleted'
+        ], 200);
+    }
 }
