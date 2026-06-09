@@ -45,6 +45,14 @@ const TaskList = () => {
                                 </div>
                             </li>
                             <li>
+                                <div className="tooltip" data-tip="Edit">
+                                    <svg width={15} height={15} fill="none" className="stroke-current" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                </div>
+                            </li>
+                            <li>
                                 <div className="tooltip" data-tip="Delete">
                                     <svg width={15} height={15} fill="none" onClick={() => handleDelete(id)} 
                                     className="stroke-current" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -66,7 +74,7 @@ const TaskList = () => {
             <div className="card bg-slate-600/50 w-96 shadow-sm">
             <div className="card-body">
                 <h2 className="card-title">To Do List</h2>
-                <p className="text-gray-300/60 text-sm">Anong gagawin ng bading?</p>
+                <p className="text-gray-300/60 text-sm">Pending tasks</p>
 
                 <div className="flex flex-col gap-3 mt-5 max-h-[25rem] overflow-y-auto">
                     {activeTasks.length === 0 ? (
