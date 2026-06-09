@@ -1,9 +1,12 @@
 import * as React from 'react';
 import apiService from '../../services/apiService';
+import { useTaskContext } from '../../context/TaskContext';
 
 const TaskForm = () => {
     const [ title, setTitle ] = React.useState('');
     const [ description, setDescription ] = React.useState('');
+
+    const { updateContext } = useTaskContext();
 
     const handleSubmit = () => {
         apiService.post('/save-task', {
@@ -13,7 +16,10 @@ const TaskForm = () => {
             console.log(res);
             setTitle('');
             setDescription('');
-        })
+            updateContext();
+        }).catch((error) => {
+            console.error('Error saving task:', error);
+        });
     }
 
     return (

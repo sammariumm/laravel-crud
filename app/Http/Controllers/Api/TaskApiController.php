@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 
 class TaskApiController extends Controller
 {
+    protected $todoModel;
+
     public function saveTask(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -40,5 +42,23 @@ class TaskApiController extends Controller
         return response()->json([
             'data' => $tasks,
         ], 200);
+    }
+
+    public function markAsDone($taskId)
+    {
+        $task = Task::find($taskId);
+
+        if (!$task) {
+            return response() -> json([
+                'error' => 'Task not found'
+            ], 404);
+        }
+
+        $task->is_completed = true;
+        $task->save();
+
+        return response() -> json([
+            'message' => 'Marked as done'
+        ], 200); 
     }
 }
