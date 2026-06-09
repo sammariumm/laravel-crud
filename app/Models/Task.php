@@ -10,7 +10,12 @@ class Task extends Model
     use HasFactory;
 
     protected $guarded = ['id', 'completed'];
-    protected $fillable = ['title', 'description'];
+    protected $fillable = ['title', 'subject_id', 'description'];
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
+    }
 
     public function createTask($task)
     {
