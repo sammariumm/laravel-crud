@@ -78,4 +78,36 @@ class TaskApiController extends Controller
             'message' => 'Deleted'
         ], 200);
     }
+
+    public function editTask(Request $request, $taskId)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:25',
+            'description' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $task = Task::find($taskId);
+
+        if (!$task) {
+            return response()-json([
+                'error' => 'Task not found',
+            ], 404);
+        }
+
+        $task->update([
+            'title' => $request->title,
+            'description' => $request->description,
+        ]);
+
+        return response()->json([
+            'message' => 'Task edited successfully',
+            'task' => $task,
+        ], 200);
+    }
 }
