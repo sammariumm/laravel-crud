@@ -5,7 +5,7 @@ interface TaskData {
     title: string;
     description: string;
     id: number;
-    completed: 0 | 1;
+    is_completed: 0 | 1;
     created_at: string;
     updated_at: string;
 }
@@ -17,16 +17,19 @@ interface TaskContextType {
 
 const TaskContext = React.createContext<TaskContextType | undefined>(undefined);
 
-export const TaskProvider: React.FC = ({ children }) => {
-    const [taskList, setTaskList] = React.useState<TaskData[]>();
+export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
+    const [taskList, setTaskList] = React.useState<TaskData[]>([]);
 
     const fetchTaskList = () => {
-        apiService.get<{data: TaskData[]}>('get-tasks').then((response) => {
-            console.log(response);
-            setTaskList(response.data.data);
-        }).catch((error) => {
-            console.error('Error fetching task list:', error);
-        });
+        apiService
+            .get<{ data: TaskData[] }>('get-tasks')
+            .then((response) => {
+                console.log(response);
+                setTaskList(response.data.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching task list:', error);
+            });
     };
 
     React.useEffect(() => {
@@ -35,17 +38,21 @@ export const TaskProvider: React.FC = ({ children }) => {
 
     const updateContext = () => {
         fetchTaskList();
-    }
+    };
 
-    return <TaskContext.Provider value={{ taskList }}>
-        {children}
-    </TaskContext.Provider>
-}
+    return (
+        <TaskContext.Provider value={{ taskList, updateContext }}>
+            {children}
+        </TaskContext.Provider>
+    );
+};
 
 export const useTaskContext = () => {
     const context = React.useContext(TaskContext);
+
     if (!context) {
         throw new Error('useTaskContext must be used within a TaskProvider');
     }
+
     return context;
-}
+};
