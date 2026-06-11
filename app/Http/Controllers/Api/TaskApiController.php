@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Task;
+use App\Models\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,10 +12,12 @@ class TaskApiController extends Controller
 {
     protected $todoModel;
 
+    // FOR TASK-RELATED FUNCTIONS
     public function saveTask(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:25',
+            'subject_id' => 'nullable|exists:subjects,id',
             'description' => 'required|string',
         ]);
 
@@ -26,6 +29,7 @@ class TaskApiController extends Controller
 
         $task = Task::create([
             'title' => $request->title,
+            'subject_id' => $request->subject_id,
             'description' => $request->description,
         ]);
 
@@ -37,7 +41,7 @@ class TaskApiController extends Controller
 
     public function getAllTasks()
     {
-        $tasks = Task::latest()->get();
+        $tasks = Task::with('subject')->latest()->get();
 
         return response()->json([
             'data' => $tasks,
@@ -83,6 +87,7 @@ class TaskApiController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:25',
+            'subject_id' => 'nullable|exists:subjects,id',
             'description' => 'required|string',
         ]);
 
@@ -102,6 +107,7 @@ class TaskApiController extends Controller
 
         $task->update([
             'title' => $request->title,
+            'subject_id' => $request->subject_id,
             'description' => $request->description,
         ]);
 
@@ -109,5 +115,37 @@ class TaskApiController extends Controller
             'message' => 'Task edited successfully',
             'task' => $task,
         ], 200);
+    }
+
+    // FOR SUBJECT-RELATED FUNCTIONS
+    public function getSubjects() 
+    {
+        $subjects = Subject::latest()->get();
+
+        return response()->json([
+            'data' => $subjects
+        ], 200);
+    }
+
+    public function saveSubject(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:50'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $subject = Subject::create([
+            'name' => $request->name,
+        ]);
+
+        return response()->json([
+            'message' => 'Subject created',
+            'subject' => $subject,
+        ], 201);
     }
 }

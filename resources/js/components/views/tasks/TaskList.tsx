@@ -24,13 +24,14 @@ const TaskList = () => {
     }
 
     const renderList = (task) => {
-        const {title, id, description} = task
+        const {title, id, description, subject} = task
         return (
             <div className="rounded-xl bg-base-100/60 p-6" key={id}>
                 <div className="flex justify-between">
                     <div>
                         <div className="text-xl">{title}</div>
-                        <div className="text-sm">{truncateString(description, 20)}</div>
+                        <div className="text-xs text-cyan-300">{task.subject?.name ?? 'No subject'}</div>
+                        <div className="text-sm">{truncateString(description, 25)}</div>
                     </div>
 
                     <div>
@@ -71,7 +72,7 @@ const TaskList = () => {
 
     return (
         <div>
-            <div className="card bg-slate-600/50 w-96 shadow-sm">
+            <div className="card bg-slate-600/50 w-[28rem] shadow-sm">
             <div className="card-body">
                 <h2 className="card-title">To Do List</h2>
                 <p className="text-gray-300/60 text-sm">Pending tasks</p>
