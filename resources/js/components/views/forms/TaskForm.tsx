@@ -3,12 +3,31 @@ import apiService from '../../services/apiService';
 import { useTaskContext } from '../../context/TaskContext';
 
 const TaskForm = () => {
-    const [ title, setTitle ] = React.useState('');
-    const [ description, setDescription ] = React.useState('');
-
-    const { updateContext } = useTaskContext();
+    const { 
+        title, 
+        setTitle, 
+        description, 
+        setDescription,
+        editingId,
+        resetForm,
+        updateContext 
+    } = useTaskContext();
 
     const handleSubmit = () => {
+        if (editingId) {
+            apiService.put('edit/' + editingId, {
+                title,
+                description
+            }).then((res) => {
+                updateContext();
+                resetForm();
+            }).catch((error) => {
+                console.log("Error editing task: ", error);
+            })
+
+            return;
+        }
+
         apiService.post('/save-task', {
             title,
             description
@@ -30,9 +49,16 @@ const TaskForm = () => {
             <textarea value={description} onChange={(event) => {
                 setDescription(event.target.value);
             }} className="textarea min-h-52 w-full" placeholder="Description"></textarea>
-            <button className="btn btn-soft btn-primary" onClick={handleSubmit}>
-                Save task
-            </button>
+            <div className="flex gap-2">
+                <button className="btn btn-soft btn-primary" onClick={handleSubmit}>
+                    {editingId ? 'Save Changes' : 'Save Task'}
+                </button>
+                {editingId && (
+                    <button type="button" className="btn btn-ghost" onClick={resetForm}>
+                        Cancel
+                    </button>
+                )}
+            </div>
         </div>
     )
 }
